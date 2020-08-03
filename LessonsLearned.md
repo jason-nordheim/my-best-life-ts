@@ -7,5 +7,4 @@ Next JS is a lightwieght JavaScript framework based on React that handles a lot 
   1. `getStaticProps` (Static Generation) => Fetch data at build time.
   2. `getStaticPaths` (Static Generation): Specify dynamic routes to pre-render based on data.
   3. `getServerSideProps` (Server-side Rendering): Fetch data on each request.
-- The primary method of data fetching 
 
