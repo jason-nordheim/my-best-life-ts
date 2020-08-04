@@ -7,6 +7,8 @@ import { isBrowser } from "./isBrowser";
 import { ApolloClient, NormalizedCacheObject } from 'apollo-boost'
 import Head from 'next/head'
 
+
+/** functionj to parse cookies recieved from the client-request */
 function parseCookies(req?: any, options = {}) {
   return cookie.parse(
     req ? req.headers.cookie || "" : document.cookie,
