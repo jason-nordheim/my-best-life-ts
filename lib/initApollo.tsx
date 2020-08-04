@@ -14,18 +14,23 @@ interface Options {
 if(!isBrowser){
   (global as any).fetch = fetch 
 }
-
+/* 
+ * Factory function to create the apollo client, with initial state 
+ * and as well as a parameterized function that enabled retrieval of the 
+ * cookie and processing as if it was a token despite cookie-based 
+ * authentication 
+*/ 
 function create (initialState: any, { getToken }: Options) {
   const httpLink = createHttpLink({
-    uri: 'https://api.graph.cool/simple/v1/cj5geu3slxl7t0127y8sity9r', 
-    credentials: 'same-origin'
+    uri: 'http://localhost:3000/', /** Server URI */ 
+    credentials: 'include'
   })
   const authLink = setContext((_, { headers }) => {
     const token = getToken() 
     return {
       headers: {
         ...headers, 
-        authorization: token ? `Bearer ${token}`, 
+        cookie: token ? `qid=${token}`: "" 
       }, 
     }
   })
