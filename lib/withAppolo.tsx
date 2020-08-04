@@ -5,6 +5,7 @@ import { getDataFromTree } from "react-apollo";
 import initApollo from "./initApollo";
 import { isBrowser } from "./isBrowser";
 import { ApolloClient, NormalizedCacheObject } from 'apollo-boost'
+import Head from 'next/head'
 
 function parseCookies(req?: any, options = {}) {
   return cookie.parse(
@@ -13,6 +14,19 @@ function parseCookies(req?: any, options = {}) {
   );
 }
 
+/* 
+* Higher Order Component 
+*   - recieves `App:any` and returns the class passed to it, with some 
+*     "stuff" inside of it 
+*       - `App.getInitialProps` is a special method that is run by 
+*          nextjs before a page is rendered. 
+*   - initializes the apollo client 
+*       - passes the apollo client to  
+*   - `getDataFromTree()` - 
+*     - runs query components placed anywhere within the application 
+*       and stores the data in the cache, so that when the page first renders, 
+*       it will have all the required data in the cache
+*/ 
 export default (App: any) => {
   return class WithData extends React.Component {
     static displayName = `WithData(${App.displayName})`;
@@ -25,7 +39,7 @@ export default (App: any) => {
       } = ctx;
       const apollo = initApollo(
         {},
-        { getToken: () => parseCookies(req).token }
+        { getToken: () => parseCookies(req).qid }
         );
         ctx.ctx.apolloClient = apollo;
         
@@ -59,6 +73,12 @@ export default (App: any) => {
               // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
               console.error("Error while running `getDataFromTree`", error);
             }
+            
+            // getDataFromTree does not call componentWillUnmount
+            // head side effect will need to be cleared manually to 
+            // prevent errors 
+            Head.rewind(); 
+
             // extract query data from the Apollo store
             const apolloState = apollo.cache.extract();
             
